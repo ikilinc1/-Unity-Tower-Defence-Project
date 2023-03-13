@@ -10,6 +10,9 @@ public class Tower : MonoBehaviour
     
     public List<EnemyController> enemiesInRange = new List<EnemyController>();
 
+    [HideInInspector]
+    public bool enemiesUpdated;
+
     public float checkTime = 0.2f;
     private float checkCounter;
     
@@ -24,6 +27,7 @@ public class Tower : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        enemiesUpdated = false;
         checkCounter -= Time.deltaTime;
         if (checkCounter <= 0)
         {
@@ -36,6 +40,8 @@ public class Tower : MonoBehaviour
             {
                 enemiesInRange.Add(col.GetComponent<EnemyController>());
             }
+
+            enemiesUpdated = true;
         }
     }
 }
