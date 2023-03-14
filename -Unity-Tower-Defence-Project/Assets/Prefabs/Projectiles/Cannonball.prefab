@@ -50,6 +50,7 @@ MonoBehaviour:
   theRB: {fileID: 5042965287119854239}
   moveSpeed: 10
   impactEffect: {fileID: 3262003460928401419, guid: 4f5588dacc3990346a06ae155f02ebe6, type: 3}
+  damageAmount: 5
 --- !u!135 &5042965287119854232
 SphereCollider:
   m_ObjectHideFlags: 0
