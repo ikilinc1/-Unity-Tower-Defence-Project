@@ -10,7 +10,9 @@ public class TowerManager : MonoBehaviour
 
     public Transform indicator;
     public bool isPlacing;
-    public LayerMask whatIsPlacement;
+    public LayerMask whatIsPlacement, whatIsObstacle;
+
+    public float topSafePercent = 15f;
     
     private void Awake()
     {
@@ -30,14 +32,27 @@ public class TowerManager : MonoBehaviour
         {
             indicator.position = GetGridPosition();
 
-
-            if (Input.GetMouseButtonDown(0))
+            RaycastHit hit;
+            if (Input.mousePosition.y > Screen.height * (1f - (topSafePercent / 100f)))
             {
-                isPlacing = false;
-
-                Instantiate(activeTower, indicator.position, activeTower.transform.rotation);
-                
                 indicator.gameObject.SetActive(false);
+            }
+            else if (Physics.Raycast(indicator.position + new Vector3(0, -2f, 0), Vector3.up,out hit, 10f, whatIsObstacle))
+            {
+                indicator.gameObject.SetActive(false);
+            }
+            else
+            {
+                indicator.gameObject.SetActive(true);
+                
+                if (Input.GetMouseButtonDown(0))
+                {
+                    isPlacing = false;
+
+                    Instantiate(activeTower, indicator.position, activeTower.transform.rotation);
+                
+                    indicator.gameObject.SetActive(false);
+                }
             }
         }
     }
@@ -48,7 +63,14 @@ public class TowerManager : MonoBehaviour
 
         isPlacing = true;
         
-        indicator.gameObject.SetActive(true);
+        Destroy(indicator.gameObject);
+        Tower placeTower = Instantiate(activeTower);
+        placeTower.enabled = false;
+        placeTower.GetComponent<Collider>().enabled = false;
+        indicator = placeTower.transform;
+        
+        placeTower.rangeModel.SetActive(true);
+        placeTower.rangeModel.transform.localScale = new Vector3(placeTower.range, 1f, placeTower.range);
     }
 
     private Vector3 GetGridPosition()
